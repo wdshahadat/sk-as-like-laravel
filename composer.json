@@ -1,0 +1,19 @@
+{
+    "name": "shaha/php-oop",
+    "description": "This is as like laravel output using solid php oop",
+    "autoload": {
+        "files": [
+            "./App/Traits/Helper.php"
+        ],
+        "psr-4": {
+            "App\\": "./App/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Md. Shahadat Khan",
+            "email": "wdshahadat@gmail.com"
+        }
+    ],
+    "require": {}
+}

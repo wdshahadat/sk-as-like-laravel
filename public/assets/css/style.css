@@ -1,0 +1,7 @@
+.admin-login-box {
+    width: 100%;
+}
+.login-box,
+.register-box {
+   margin: 10% auto !important;
+}
