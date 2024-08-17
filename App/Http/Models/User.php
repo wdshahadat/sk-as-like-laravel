@@ -2,7 +2,6 @@
 
 namespace App\Http\Models;
 
-use App\Http\Models\Role;
 use App\Http\Services\Model;
 
 class User extends Model

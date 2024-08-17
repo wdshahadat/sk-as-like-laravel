@@ -2,7 +2,7 @@
 
 namespace App\Http\Services;
 
-use \PDO;
+use PDO;
 
 class Db
 {
@@ -28,6 +28,7 @@ class Db
             $instance = new self();
             self::$instance = $instance->db;
         }
+
         return self::$instance;
     }
 
@@ -42,6 +43,7 @@ class Db
                 $row->{$k} = is_numeric($v) ? intval($v) : $v;
             }
         }
+
         return $row;
     }
 
@@ -52,7 +54,7 @@ class Db
             self::$whereFilter = false;
             self::$joinCondition = '';
 
-            $returnType = $dataTypeArray ? PDO::FETCH_ASSOC: PDO::FETCH_OBJ;
+            $returnType = $dataTypeArray ? PDO::FETCH_ASSOC : PDO::FETCH_OBJ;
 
             while ($row = $result->fetch($returnType)) {
                 $dataStore[] = self::rowProses($row);
@@ -60,8 +62,10 @@ class Db
             if ($storeData) {
                 self::$dataStore = $dataStore;
             }
-            return empty($dataStore) ? null:$dataStore;
+
+            return empty($dataStore) ? null : $dataStore;
         }
+
         return null;
     }
 }

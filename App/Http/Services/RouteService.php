@@ -2,16 +2,14 @@
 
 namespace App\Http\Services;
 
-use App\Traits\RouteServiceTrait;
-use App\Http\Services\Request;
 use App\Middleware\MiddlewareService;
+use App\Traits\RouteServiceTrait;
 
 abstract class RouteService extends MiddlewareService
 {
     use RouteServiceTrait;
 
     protected static $default = 'App\\Http\\Controllers\\';
-
 
     public static function load()
     {
@@ -43,9 +41,9 @@ abstract class RouteService extends MiddlewareService
         $uri = urldecode(parse_url($uri, PHP_URL_PATH));
         $uri = basename(ROOT) === basename($uri) ? '/' : $uri;
         self::$uri = str_replace(NEED_REPLACE, '', $uri);
+
         return self::$uri;
     }
-
 
     public static function hasRoutParams($uri)
     {
@@ -56,6 +54,7 @@ abstract class RouteService extends MiddlewareService
         } elseif (isset($route[$uri]) && is_callable($route[$uri])) {
             return false;
         }
+
         return null;
     }
 
@@ -85,7 +84,6 @@ abstract class RouteService extends MiddlewareService
             $store = self::$uriStore[$method];
             $callback = $store && isset($store[$uri]) ? $store[$uri] : false;
 
-
             if (!$callback && !empty($store)) {
                 foreach ($store as $solidPath => $callAble) {
                     if (is_array($callAble) && isset($callAble['params']) && strpos($uri, $solidPath) === 0) {
@@ -111,6 +109,7 @@ abstract class RouteService extends MiddlewareService
             if ($callback) {
                 self::load();
             }
+
             return $callback;
         }
     }
@@ -125,11 +124,12 @@ abstract class RouteService extends MiddlewareService
 
         if (is_array($params)) {
             array_shift($params);
+
             return array_combine(explode('/', str_replace(['{', '}'], '', $paramsPattern)), $params);
         }
+
         return [];
     }
-
 
     private static function resolve()
     {
@@ -137,16 +137,16 @@ abstract class RouteService extends MiddlewareService
         self::$requestMethod = strtolower($_SERVER['REQUEST_METHOD']);
         $callback = self::storeRequests(self::$requestMethod, self::uri());
 
-        $_SESSION["history3"] = isset($_SESSION["history3"]) ? $_SESSION["history3"] : [];
+        $_SESSION['history3'] = isset($_SESSION['history3']) ? $_SESSION['history3'] : [];
 
         if ($callback) {
             if (is_callable($callback)) {
                 $_SESSION['history3'][CURRENT_URI] = CURRENT_URI;
                 $output = call_user_func($callback, self::$request, ...array_values(self::$routeParams));
             } else {
-                $controller = self::$default . str_replace(self::$default, '', $callback[0]);
+                $controller = self::$default.str_replace(self::$default, '', $callback[0]);
                 $controller = str_replace('\\\\', '\\', $controller);
-                $controller = new $controller;
+                $controller = new $controller();
                 $method = $callback[1];
 
                 if (method_exists($controller, $method) && get_class_methods($controller)) {
@@ -164,31 +164,38 @@ abstract class RouteService extends MiddlewareService
             echo is_string($output) ? $output : json_encode($output);
         }
 
-        if (count($_SESSION["history3"]) > 2) {
-            array_shift($_SESSION["history3"]);
+        if (count($_SESSION['history3']) > 2) {
+            array_shift($_SESSION['history3']);
         }
+
         return false;
     }
-
 
     public static function get($uri, $callback)
     {
         self::storeRequests('get', $uri, $callback);
+
         return new static();
     }
+
     public static function post($uri, $callback)
     {
         self::storeRequests('post', $uri, $callback);
+
         return new static();
     }
+
     public static function patch($uri, $callback)
     {
         self::storeRequests('patch', $uri, $callback);
+
         return new static();
     }
+
     public static function delete($uri, $callback)
     {
         self::storeRequests('delete', $uri, $callback);
+
         return new static();
     }
 

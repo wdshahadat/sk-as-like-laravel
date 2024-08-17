@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\shop;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Auth;
-use App\Http\Models\Product;
-use App\Http\Models\Model;
-use App\Config\Request;
 use App\Config\Content;
+use App\Config\Request;
+use App\Http\Controllers\Auth;
+use App\Http\Controllers\Controller;
+use App\Http\Models\Model;
+use App\Http\Models\Product;
 
 class ShoppingController extends Controller
 {
@@ -28,6 +28,7 @@ class ShoppingController extends Controller
         Content::$JsFiles = 'shopping_cart';
         $products = Product::all()->data();
         $categories = Model::table('product_category')->get()->data();
+
         return view('layouts.shop.shopping_cart', compact('products', 'categories'));
     }
 
@@ -39,6 +40,7 @@ class ShoppingController extends Controller
         $product['price'] = $request->price;
         $product['image'] = $this->fileManage(['image' => 'uploads/products']);
         $result = Product::create($product);
+
         return response($result);
     }
 
@@ -51,6 +53,7 @@ class ShoppingController extends Controller
         if (isset($request->oldImage)) {
             $product['image'] = $this->fileManage(['image' => 'uploads/products'], $request->oldImage);
         }
+
         return response(Product::where(['id' => getPath()])->update($product));
     }
 
@@ -61,6 +64,7 @@ class ShoppingController extends Controller
         if ($delete) {
             return fileDelete($data->image);
         }
+
         return false;
     }
 }

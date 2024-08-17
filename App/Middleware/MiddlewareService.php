@@ -2,8 +2,8 @@
 
 namespace App\Middleware;
 
-use App\Traits\MiddlewareTrait;
 use App\Http\Services\Request;
+use App\Traits\MiddlewareTrait;
 
 class MiddlewareService
 {
@@ -19,9 +19,10 @@ class MiddlewareService
         $method = strtolower($_SERVER['REQUEST_METHOD']);
         if (URI === array_key_last(self::$uriStore[$method])) {
             $keyArg = explode(':', $middleware[0]);
-            $middle = 'App\\Middleware\\' . trim($keyArg[0]);
-            $middle = new $middle;
+            $middle = 'App\\Middleware\\'.trim($keyArg[0]);
+            $middle = new $middle();
             $guardKey = $keyArg[1];
+
             return $middle->handle($guardKey);
         }
     }

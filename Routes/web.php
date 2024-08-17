@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Services\Route; 
+use App\Http\Services\Route;
 
 /*
  * Uer authentication//
@@ -17,7 +17,6 @@ Route::get('/logOut', '\Auth@logOut');
  * Uer authentication end//
  */
 
-
 Route::get('/user/list', 'UserController@index');
 Route::get('/change/password', 'UserController@changePassword');
 Route::post('/user/password/update/{id}', 'UserController@passwordUpdate');
@@ -30,7 +29,6 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('backend.dashboard');
 })->middleware(['Authentication:admin']);
-
 
 // Product manage
 Route::get('/product/items', 'shop\ShoppingController@products');

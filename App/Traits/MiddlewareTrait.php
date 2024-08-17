@@ -4,7 +4,6 @@ namespace App\Traits;
 
 trait MiddlewareTrait
 {
-
     public function middleware($middleware = [])
     {
         // middleware

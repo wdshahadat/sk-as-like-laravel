@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 /**
- * StoreCatch
+ * StoreCatch.
  */
 trait StoreCatch
 {
@@ -14,6 +14,7 @@ trait StoreCatch
         if ($old) {
             self::$old = $old;
         }
+
         return self::$old;
     }
 }

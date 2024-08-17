@@ -2,12 +2,8 @@
 
 namespace App\Http\Services;
 
-use App\Http\Services\RouteService;
-
 class Route extends RouteService
 {
-
-
     public function __construct()
     {
     }
@@ -20,7 +16,8 @@ class Route extends RouteService
         $to = str_replace(NEED_REPLACE, '', $to);
         $to = strpos($to, '/') === 0 ? substr($to, 1, strlen($to)) : $to;
         $_SESSION['old'] = Request::$requestData;
-        return header("Location: " . BASE_URL . $to);
+
+        return header('Location: '.BASE_URL.$to);
     }
 
     public function to($toPath)
@@ -34,16 +31,18 @@ class Route extends RouteService
     public function back($to = null): Route
     {
         if (!$to) {
-            unset($_SESSION["history3"][CURRENT_URI]);
-            $to = end($_SESSION["history3"]);
+            unset($_SESSION['history3'][CURRENT_URI]);
+            $to = end($_SESSION['history3']);
         }
         $this->redirectTo($to);
+
         return $this;
     }
 
     public function with($with): Route
     {
-        $_SESSION["tempSession"] = $with;
+        $_SESSION['tempSession'] = $with;
+
         return $this;
     }
 }

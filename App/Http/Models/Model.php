@@ -14,7 +14,7 @@ class Model extends QueryBuilder
     {
         $tableName = strtolower(basename(get_called_class()));
         if ($tableName !== 'model') {
-            self::$tableName = $tableName . 's';
+            self::$tableName = $tableName.'s';
         }
         self::$model = $this;
     }
@@ -22,14 +22,16 @@ class Model extends QueryBuilder
     private static function staticQuery()
     {
         if (!static::$model) {
-            self::$model = new static;
+            self::$model = new static();
         }
+
         return self::$model;
     }
 
     public static function table($table = '')
     {
         self::$tableName = $table;
+
         return self::staticQuery();
     }
 
@@ -44,7 +46,7 @@ class Model extends QueryBuilder
         if (is_array($data)) {
             return $data[0];
         } elseif (self::$whereFilter) {
-            return self::getFirst(" WHERE " . self::$whereFilter)->data();
+            return self::getFirst(' WHERE '.self::$whereFilter)->data();
         }
     }
 }

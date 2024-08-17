@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 // use App\Config\Content;
 use App\Http\Models\User;
 use App\Http\Services\Request;
-use App\Http\Controllers\Controller;
 
 class Auth extends Controller
 {
@@ -30,6 +29,7 @@ class Auth extends Controller
                 $_SESSION['userInfo'] = (object) $user->store;
                 $_SESSION['login90'] = md5($request->email);
                 $_SESSION['login'] = $user->unique_user;
+
                 return redirect('/');
             } else {
                 $error = ['Invalid' => 'Invalid password!'];
@@ -48,6 +48,7 @@ class Auth extends Controller
         if (isset($_SESSION['login'])) {
             return redirect('/');
         }
+
         return view('auth.login');
     }
 
@@ -59,17 +60,19 @@ class Auth extends Controller
     public static function forgotPasswordSendEmail(Request $request)
     {
         $user = User::find(['email' => $request->email]);
+
         return $user;
     }
 
     public static function routes()
     {
-        return new Auth;
+        return new Auth();
     }
 
     public static function logOut()
     {
         session_destroy();
+
         return redirect('login');
     }
 
@@ -84,6 +87,7 @@ class Auth extends Controller
         }
 
         $user = !is_object($user) && isset($_SESSION['userInfo']) ? $_SESSION['userInfo'] : $user;
+
         return $user ? $user : (object) [];
     }
 
@@ -92,6 +96,7 @@ class Auth extends Controller
         if (!self::isLogged()) {
             return false;
         }
+
         return isset($_SESSION['userInfo']) && isset($_SESSION['userInfo']->{$userType}) ? true : false;
     }
 

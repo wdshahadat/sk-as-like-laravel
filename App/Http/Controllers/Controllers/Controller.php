@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\FileUpload;
-
 class Controller
 {
     use FileUpload;

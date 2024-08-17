@@ -4,7 +4,6 @@ namespace App\Http\Services;
 
 class Request
 {
-
     public static string $pageTitle = 'PHP (OOP) Custom MVC';
     public static $requestData = [];
     private static $urlParams = [];
@@ -20,13 +19,13 @@ class Request
         if ($urlParams) {
             self::$urlParams = $urlParams;
         }
+
         return self::$urlParams;
     }
 
     // Session set manage
     public static function session($key = false, $val = false)
     {
-
         if (is_array($key) || is_object($key)) {
             $session = (array) $key;
         } elseif (isset($val) && (is_array($val) || is_object($val))) {
@@ -43,7 +42,6 @@ class Request
         }
     }
 
-
     // input value filter start
     public function fieldValidation($val, $null_check)
     {
@@ -57,13 +55,14 @@ class Request
         if (isset($null_check)) {
             $data = isset($data) ? $data : '';
         }
+
         return $data;
     }
 
     public function validation($data_, $null_check = null, $remove = null)
     {
         if (is_array($data_)) {
-            $dataArray = array();
+            $dataArray = [];
             foreach ($data_ as $key => $value) {
                 if (is_array($value)) {
                     if (!empty($value)) {
@@ -83,18 +82,23 @@ class Request
                     }
                 }
             }
+
             return $dataArray;
         } elseif (!empty($data_)) {
             return $this->fieldValidation($data_, $null_check);
         }
+
         return $data_;
-    } // input value filter end
+    }
+
+    // input value filter end
     // input value verification
     public function valueFilter($val)
     {
         $data = trim($val);
         $data = stripcslashes($data);
         $data = htmlspecialchars($data);
+
         return $data;
     }
 
@@ -105,6 +109,7 @@ class Request
             foreach ($data_ as $key => $value) {
                 $dataArray[$key] = $this->valueFilter($value);
             }
+
             return $dataArray;
         } else {
             return $this->valueFilter($data_);

@@ -4,7 +4,6 @@ namespace App\Http\Services;
 
 class Response
 {
-
     public static $temp;
     public static $session;
     private static Response $catch;
@@ -14,6 +13,7 @@ class Response
         if (!isset(self::$catch)) {
             self::$catch = new Response();
         }
+
         return self::$catch;
     }
 

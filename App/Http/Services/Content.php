@@ -2,7 +2,6 @@
 
 namespace App\Http\Services;
 
-use App\Http\Services\Response;
 use App\Traits\StoreCatch;
 
 class Content
@@ -25,18 +24,19 @@ class Content
         $output = '';
         if ($mainLayout) {
             foreach ($sections as $section) {
-                $sectionKey = '@yield' . substr($section, 0, strpos($section, ')') + 1);
+                $sectionKey = '@yield'.substr($section, 0, strpos($section, ')') + 1);
                 $section = substr($section, strpos($section, ')') + 1, strpos($section, '@endsection') - 16);
                 $mainLayout = str_replace($sectionKey, $section, $mainLayout);
             }
             $output = $mainLayout;
         } else {
             foreach ($sections as $section) {
-                $sectionKey = '@section' . substr($section, 0, strpos($section, ')') + 1);
+                $sectionKey = '@section'.substr($section, 0, strpos($section, ')') + 1);
                 $viewContent = str_replace([$sectionKey, '@endsection'], '', $viewContent);
             }
             $output = $viewContent;
         }
+
         return $output;
     }
 
@@ -45,8 +45,9 @@ class Content
         ob_start();
         if (isset(self::$mainLayout)) {
             extract($data);
-            include_once(self::$mainLayout);
+            include_once self::$mainLayout;
         }
+
         return ob_get_clean();
     }
 
@@ -54,7 +55,8 @@ class Content
     {
         ob_start();
         extract($data);
-        include($view);
+        include $view;
+
         return ob_get_clean();
     }
 }

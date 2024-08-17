@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\shop;
 
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\Auth;
-use App\Http\Models\Model;
-use App\Config\Request;
 use App\Config\Content;
+use App\Config\Request;
+use App\Http\Controllers\Auth;
+use App\Http\Controllers\Controller;
+use App\Http\Models\Model;
 
 class CategoryController extends Controller
 {
@@ -21,6 +21,7 @@ class CategoryController extends Controller
     {
         Content::$JsFiles = 'category';
         $categoryList = Model::table('product_category')->all()->data();
+
         return view('layouts.shop.categories', compact('categoryList'));
     }
 

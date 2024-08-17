@@ -2,7 +2,6 @@
 
 namespace App\Http\Services;
 
-use App\Http\Services\Db;
 use App\Traits\QueryBuilderTrait;
 
 abstract class QueryBuilder extends Db
@@ -18,13 +17,11 @@ abstract class QueryBuilder extends Db
     private static $recentlyAddedAttr;
     private static $withMethods = [];
 
-
     // for relation eloquent
     private $local_key;
     private $foreign_key;
     private $relationModal;
     private $calledMethodName;
-
 
     private static function cModal()
     {
@@ -32,6 +29,7 @@ abstract class QueryBuilder extends Db
             return self::$calledModal;
         } else {
             self::$calledModal = new static();
+
             return self::$calledModal;
         }
     }
@@ -50,6 +48,7 @@ abstract class QueryBuilder extends Db
             //                    get_object_vars(new static())
             //                );
         }
+
         return self::$recentlyAddedAttr;
     }
 
@@ -62,9 +61,10 @@ abstract class QueryBuilder extends Db
         $tableName = '';
         foreach (str_split(basename($calledModal)) as $index => $letter) {
             $tableName .= preg_match('/[A-Z]/', $letter, $matches) ?
-                ($index > 0 ? '_' : '' . strtolower($letter)) : $letter;
+                ($index > 0 ? '_' : ''.strtolower($letter)) : $letter;
         }
         $tableName .= strpos($tableName, '_') ? '' : 's';
+
         return $tableName;
     }
 
@@ -73,6 +73,7 @@ abstract class QueryBuilder extends Db
         $table = self::getTable();
         $keys = implode('`, `', array_keys($values));
         $valueData = implode("', '", $values);
+
         return "INSERT INTO `{$table}` (`{$keys}`) VALUES ('{$valueData}')";
     }
 
@@ -84,22 +85,23 @@ abstract class QueryBuilder extends Db
     public function create($createData)
     {
         $sql = $this->arrayToInsertSql($createData);
+
         return self::connect()->query($sql) ? self::last('', 1) : false;
     }
 
     public function update($updateData = false)
     {
         $table = self::getTable();
-        $updateData = $updateData ? $updateData:$this->getRecentlyAddedAttr();
+        $updateData = $updateData ? $updateData : $this->getRecentlyAddedAttr();
         $update = implode(', ', array_map(function ($key, $value) {
             return "{$key} = '{$value}'";
         }, array_keys($updateData), array_values($updateData)));
         $whereCondition = self::$whereFilter;
 
         $sql = "UPDATE {$table} SET {$update} {$whereCondition}";
+
         return self::connect()->query($sql) ? self::find($whereCondition)->data() : false;
     }
-
 
     //select part
     public static function table($table = false)
@@ -107,11 +109,14 @@ abstract class QueryBuilder extends Db
         if ($table) {
             self::$tableName = $table;
         }
+
         return new static();
     }
+
     public static function select($selectColumn = '*')
     {
         self::$selectColumn = $selectColumn;
+
         return new static();
     }
 
@@ -128,6 +133,7 @@ abstract class QueryBuilder extends Db
         } elseif (is_string($data)) {
             $whereCondition = $data;
         }
+
         return empty($whereCondition) ? '' : $whereCondition;
     }
 
@@ -139,6 +145,7 @@ abstract class QueryBuilder extends Db
         } else {
             self::$whereFilter = " WHERE {$whereCondition}";
         }
+
         return $onlyWhere ? self::$whereFilter : new static();
     }
 
@@ -150,6 +157,7 @@ abstract class QueryBuilder extends Db
         } else {
             self::$whereFilter = " WHERE {$column} IN ({$whereInCondition})";
         }
+
         return $onlyWhere ? $whereInCondition : new static();
     }
 
@@ -158,12 +166,14 @@ abstract class QueryBuilder extends Db
         $table = self::getTable();
         $whereCondition = is_numeric($id) ? "id={$id}" : $id;
         $sql = "DELETE FROM {$table} WHERE {$whereCondition}";
+
         return self::connect()->query($sql);
     }
 
     public static function find($condition)
     {
         $current = new static();
+
         return $current->first($condition);
     }
 
@@ -174,6 +184,7 @@ abstract class QueryBuilder extends Db
         } elseif (is_numeric($condition)) {
             $condition = "id={$condition}";
         }
+
         return self::last($condition, 1, $table);
     }
 
@@ -195,6 +206,7 @@ abstract class QueryBuilder extends Db
         foreach ($objectData as $key => $val) {
             $currentModal->{$key} = $val;
         }
+
         return $currentModal;
 //        return $onlyData ? $objectData : $currentModal;
     }
@@ -206,6 +218,7 @@ abstract class QueryBuilder extends Db
 
         return new static();
     }
+
     public function get()
     {
         $table = self::getTable();
@@ -222,6 +235,7 @@ abstract class QueryBuilder extends Db
                 call_user_func([$this, $method]);
             }
         }
+
         return $this;
     }
 
@@ -229,9 +243,9 @@ abstract class QueryBuilder extends Db
     {
         $type = strtoupper($type);
         self::$joinCondition .= "{$type} JOIN {$joinTable} ON {$joinRelation}";
+
         return new static();
     }
-
 
     // eloquent relation
     private function relationTable($modalObject)
@@ -243,9 +257,10 @@ abstract class QueryBuilder extends Db
         } else {
             $tableName = '';
             foreach (str_split(basename($cls)) as $index => $letter) {
-                $tableName .= preg_match('/[A-Z]/', $letter, $matches) ? ($index > 0 ? '_' : '' . strtolower($letter)) : $letter;
+                $tableName .= preg_match('/[A-Z]/', $letter, $matches) ? ($index > 0 ? '_' : ''.strtolower($letter)) : $letter;
             }
             $tableName .= strpos($tableName, '_') ? '' : 's';
+
             return $tableName;
         }
     }
@@ -261,6 +276,7 @@ abstract class QueryBuilder extends Db
             }
             self::$withMethods = [];
         }
+
         return $calledModal;
     }
 
@@ -269,7 +285,8 @@ abstract class QueryBuilder extends Db
         $this->relationModal = $modal;
         $this->local_key = $local_key;
         $this->calledMethodName = $hasOne ? $hasOne : debug_backtrace()[1]['function'];
-        $this->foreign_key = $foreign_key ? $foreign_key : strtolower(basename(static::class)) . '_id';
+        $this->foreign_key = $foreign_key ? $foreign_key : strtolower(basename(static::class)).'_id';
+
         return $this;
     }
 
@@ -277,6 +294,7 @@ abstract class QueryBuilder extends Db
     {
         $condition = $condition ? $condition : self::$whereFilter;
         $sql = "SELECT * FROM `{$table}`{$condition}";
+
         return self::dataService(self::connect()->query($sql), false, false);
     }
 
@@ -304,15 +322,19 @@ abstract class QueryBuilder extends Db
                     return $owner_key_value === $foreign_key_value && $foreign_key_value !== null;
                 }) : [];
                 $item->{$this->calledMethodName} = $hasOne ? array_shift($relation_data) : $relation_data;
+
                 return $item;
             }, self::$dataStore);
 
             if ($hasOne && isset(self::$calledMethodAsProperty["{$hasOne}property"])) {
                 $data = array_shift(self::$dataStore);
+
                 return $data->{$hasOne};
             }
+
             return self::$dataStore;
         }
+
         return $hasOne ? null : [];
     }
 
@@ -323,7 +345,7 @@ abstract class QueryBuilder extends Db
 
     public function belongsToMany($modal, $foreign_key = false, $local_key = 'id', $belongsTo = false)
     {
-        $foreign_key = $foreign_key ? $foreign_key : strtolower(basename($modal)) . '_id';
+        $foreign_key = $foreign_key ? $foreign_key : strtolower(basename($modal)).'_id';
         $this->setRelationInfo($modal, $foreign_key, $local_key, $belongsTo ? $belongsTo : debug_backtrace()[1]['function']);
 
         $dataStore = self::$dataStore;
@@ -342,14 +364,18 @@ abstract class QueryBuilder extends Db
                 }) : [];
 
                 $item->{$this->calledMethodName} = $belongsTo ? array_shift($relation_data) : $relation_data;
+
                 return $item;
             }, self::$dataStore);
             if ($belongsTo && isset(self::$calledMethodAsProperty["{$belongsTo}property"])) {
                 $data = array_shift(self::$dataStore);
+
                 return $data->{$belongsTo};
             }
+
             return self::$dataStore;
         }
+
         return $belongsTo ? null : [];
     }
 
@@ -364,11 +390,13 @@ abstract class QueryBuilder extends Db
         if (array_key_exists($name, $this->store)) {
             return $this->store[$name];
         } elseif (method_exists($calledModal, $name)) {
-            $cl =  new \ReflectionMethod($calledModal, $name);
-            $calledModal = $cl->isStatic() ? $calledModal : new $calledModal;
+            $cl = new \ReflectionMethod($calledModal, $name);
+            $calledModal = $cl->isStatic() ? $calledModal : new $calledModal();
             self::$calledMethodAsProperty["{$name}property"] = true;
+
             return call_user_func([$calledModal, $name]);
         }
+
         return null;
     }
 }
